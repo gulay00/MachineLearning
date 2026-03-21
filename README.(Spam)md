@@ -1,0 +1,129 @@
+[README.md](https://github.com/user-attachments/files/26160475/README.md)
+# 📧 SMS Spam Detector
+
+A machine learning pipeline that classifies SMS messages as **spam** or **ham** (not spam), built with NLP preprocessing and multiple classifier benchmarks.
+
+---
+
+## 🧠 Model Overview
+
+| Component | Details |
+|-----------|---------|
+| Dataset | SMS Spam Collection (~5,500 messages) |
+| Features | TF-IDF (max 3,000 features) + MinMax scaling |
+| Text preprocessing | Lowercase → Tokenize → Remove stopwords → Porter Stemmer |
+| Best model | Multinomial Naive Bayes / Voting Classifier (SVM + NB + ExtraTrees) |
+
+---
+
+## 📊 Model Results
+
+| Algorithm | Accuracy | Precision |
+|-----------|----------|-----------|
+| Naive Bayes (Multinomial) | ~97.5% | ~100% |
+| Bernoulli Naive Bayes | ~97.8% | ~98.4% |
+| SVM (sigmoid kernel) | ~97.1% | ~97.6% |
+| Logistic Regression | ~96.8% | ~97.2% |
+| Random Forest | ~97.3% | ~98.1% |
+| AdaBoost | ~96.2% | ~96.0% |
+| KNN | ~91.4% | ~93.0% |
+| Decision Tree | ~96.4% | ~94.5% |
+| **Voting Classifier (SVM+NB+ET)** | **~97.9%** | **~99.1%** |
+
+> Precision is prioritized over accuracy — we want to minimize false positives (legitimate messages flagged as spam).
+
+---
+
+## 🗂️ Project Structure
+
+```
+spam-detector/
+├── Spam.ipynb          # Full ML pipeline notebook
+├── spam_detector.html  # Web demo (API-powered)
+├── spam.csv            # Dataset (SMS Spam Collection)
+└── README.md
+```
+
+---
+
+## ⚙️ Installation
+
+```bash
+# Clone the repo
+git clone https://github.com/your-username/spam-detector.git
+cd spam-detector
+
+# Install dependencies
+pip install numpy pandas scikit-learn nltk wordcloud matplotlib seaborn
+```
+
+```python
+# Download required NLTK data
+import nltk
+nltk.download('punkt')
+nltk.download('punkt_tab')
+nltk.download('stopwords')
+```
+
+---
+
+## 🚀 Usage Examples
+
+### Run the notebook
+
+Open `Spam.ipynb` in Jupyter and run all cells. The notebook covers:
+1. Data cleaning & EDA
+2. Text preprocessing (stemming, stopword removal)
+3. TF-IDF vectorization
+4. Training & comparing 8 classifiers
+5. Voting ensemble model
+
+### Predict on a new message
+
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer
+from nltk.stem.porter import PorterStemmer
+from nltk.corpus import stopwords
+import nltk, string
+
+ps = PorterStemmer()
+
+def transform_text(text):
+    text = text.lower()
+    text = nltk.word_tokenize(text)
+    text = [w for w in text if w.isalnum()]
+    text = [w for w in text if w not in stopwords.words('english') and w not in string.punctuation]
+    text = [ps.stem(w) for w in text]
+    return " ".join(text)
+
+# Example
+msg = "WINNER!! You have been selected to receive a £900 prize. Call 09061701461 now!"
+processed = transform_text(msg)
+# vectorize and predict with your trained model
+```
+
+### Web Demo
+
+Open `spam_detector.html` in your browser for an interactive demo powered by Claude API.
+
+---
+
+## 📦 Dependencies
+
+- `pandas`, `numpy`
+- `scikit-learn`
+- `nltk`
+- `matplotlib`, `seaborn`
+- `wordcloud`
+
+---
+
+## 📁 Dataset
+
+[SMS Spam Collection Dataset](https://www.kaggle.com/datasets/uciml/sms-spam-collection-dataset) — 5,574 SMS messages labeled as ham or spam.
+
+---
+
+## 📄 License
+
+MIT License
